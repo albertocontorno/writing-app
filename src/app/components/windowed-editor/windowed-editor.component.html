@@ -1,0 +1,23 @@
+<div class="container" #windowEditor>
+
+  <div class="title-bar" #titleBar >
+    <div class="title p-1" (mousedown)="onTitleBarClicked($event, windowEditor)">{{data.title}}asdasdasdasdasd</div>
+    <div class="flex align-items-center">
+      <div class="flex py-1 px-2 btn" (click)="toggleContent(windowEditor)">
+        <i class="pi pi-minus"></i>
+      </div>
+      <div class="flex py-1 px-2 btn" (click)="onDelete()">
+        <i class="pi pi-times"></i>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="contentVisible" class="content" [ngStyle]="{'min-width': dimension.tw + 'px'}" #content (click)="onFocus(windowEditor)">
+    <!-- <textarea 
+      (focus)="onFocus(windowEditor)"
+      [(ngModel)]="data.text"
+    ></textarea> -->
+    <ng-content></ng-content>
+  </div>
+
+</div>

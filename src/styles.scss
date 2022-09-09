@@ -1,0 +1,63 @@
+/* You can add global styles to this file, and also import other style files */
+html, body{
+  margin: 0!important;
+  padding: 0 !important;
+}
+
+.text-editor-reference{
+  cursor: pointer;
+  font-weight: bold;
+  color: green;
+}
+
+/* ol, ul {
+  color: black !important;
+} */
+
+.p-contextmenu .p-menuitem-link{
+  padding: 0.25rem 0.5rem !important;
+}
+.p-overlaypanel .p-overlaypanel-content {
+  padding: 0.5rem !important;
+}
+
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link{
+  padding: 0.25rem 0.3rem !important;
+  background-color: whitesmoke !important;
+  color: black !important;
+  border-radius: 0px !important;
+  border-color: transparent transparent #bdbdbd transparent !important;
+}
+
+.p-tabmenu .p-tabmenu-nav-btn.p-link{
+  background-color: whitesmoke !important;
+  color: black !important;
+}
+
+.p-panel.p-panel-toggleable .p-panel-header{
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 0 !important;
+  background-color: #1d1d1d;
+}
+
+.p-panel .p-panel-content{
+  padding: 0.75rem !important;
+  border-radius: 0 !important;
+}
+
+.p-menubar{
+  border-radius: 0 !important;
+  padding: 0.25rem !important;
+}
+.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link{
+  padding: 0.25rem !important;
+  padding: 0.25rem 0.75rem;
+}
+
+.p-menubar .p-menuitem{
+  margin-right: 10px;
+}
+
+/* .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-icon {
+  margin-right: 0rem !important;
+} */

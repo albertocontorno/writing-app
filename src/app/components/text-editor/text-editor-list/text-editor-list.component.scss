@@ -1,0 +1,16 @@
+ul, ol{
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 3px 10px 3px 25px;
+  outline: none;
+}
+ul:hover, ol:hover{
+  border-color: whitesmoke;
+}
+/* ul:focus, ol:focus{
+  outline: #ccc solid 1px;
+} */
+ul:focus-within, ol:focus-within{
+  outline: #ccc solid 1px;
+  border-color: whitesmoke;
+}

@@ -1,0 +1,55 @@
+<p-splitter [style]="{'height': '400px'}" [panelSizes]="[15,85]" [minSizes]="[10,80]">
+  <ng-template pTemplate>
+      Index
+      <a href="https://www.w3schools.com">asd</a>
+      <ul contenteditable="true">
+        <li>as <span contenteditable="false"><a href="https://www.w3schools.com">asd</a></span>  asdas</li>
+      </ul>
+  </ng-template>
+  <ng-template pTemplate>
+
+    <p-splitter [style]="{'height': '400px'}" [panelSizes]="[70,30]" [minSizes]="[60,20]">
+      <ng-template pTemplate>
+        <div class="main-text-editor-wrapper flex flex-column">
+          <app-text-editor class="flex-grow-1" [blocks]="project.pages[currentPageIndex].blocks" [showMenu]="true"></app-text-editor>
+          <div class="flex pl-5 pr-7"> 
+            <div style="width: 100%;">
+              <p-tabMenu [model]="tabmenu" [scrollable]="true" #tabs ></p-tabMenu>
+            </div>
+            <button class="ml-1" style="border-style: solid;" type="button" (click)="addPage()"> <i class="pi pi-plus"></i></button>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate>
+        <div style="width: 100%">
+          <app-text-editor-extras></app-text-editor-extras>
+        </div>
+      </ng-template>
+    </p-splitter>
+
+  </ng-template>
+</p-splitter>
+
+<p-dialog header="Create Reference" [(visible)]="isReferenceCreationVisible" [style]="{width: '60vw'}" [modal]="true">
+  <ng-container *ngIf="newReference">
+    <label for="refTitle" class="mr-2">Reference Title</label>
+    <input type="text" pInputText [(ngModel)]="newReference.title" id="refTitle"/>
+    <br><br>
+    <app-text-editor class="flex-grow-1" [blocks]="newReference.blocks ||  []"></app-text-editor>
+  </ng-container>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Create" class="p-button-success" [disabled]="!newReference?.title" (click)="createReference()"></button>
+    <button pButton type="button" label="Cancel" class="p-button-danger" (click)="closeCreateReference()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog header="Choose Reference" [(visible)]="isReferenceChooseVisible" [style]="{width: '50vw'}" [modal]="true">
+  <div *ngFor="let ref of project?.references; let i = index;" class="reference-row shadow-2" (click)="selectReference(i)">{{ref.title}}</div>
+</p-dialog>
+
+<p-overlayPanel #referenceOP>
+  <ng-template pTemplate>
+    <app-text-editor class="flex-grow-1" [blocks]="currentReference.blocks"></app-text-editor>
+  </ng-template>
+</p-overlayPanel>
+

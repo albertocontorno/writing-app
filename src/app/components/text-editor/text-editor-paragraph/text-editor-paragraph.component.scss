@@ -1,0 +1,15 @@
+p{
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 3px;
+  outline: none;
+}
+
+p:hover{
+  border-color: #ccc;
+}
+
+p:focus{
+  outline: #ccc solid 1px;
+  border-color: #ccc;
+}

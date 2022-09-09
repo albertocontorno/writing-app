@@ -1,0 +1,15 @@
+<p-menubar [model]="items" #menubar></p-menubar>
+<section class="relative p-2">
+  <app-writing-desktop *ngIf="project" [project]="project"></app-writing-desktop>
+  <!-- <div style="max-width: 900px; margin: 0 auto;">
+    <app-text-editor></app-text-editor>
+  </div> -->
+  <!-- <app-windowed-editor 
+    *ngFor="let w of windows; let i = index;"
+    [data]="w"
+    [index]="i"
+    (deleteWindow)="onDeleteWindow($event)"
+  >
+    <app-text-editor></app-text-editor>
+  </app-windowed-editor> -->
+</section>

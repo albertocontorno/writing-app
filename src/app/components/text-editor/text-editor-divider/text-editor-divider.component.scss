@@ -1,0 +1,11 @@
+.text-editor-divider-container{
+  display: flex;
+  overflow-x: hidden;
+  margin: 3px 0;
+}
+
+.text-editor-divider{
+  flex-grow: 1;
+  height: 1px;
+  align-self: center;
+}

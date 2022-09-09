@@ -1,0 +1,92 @@
+<div class="text-editor-wrapper" (mouseover)="setCurrentEditor()">
+  <div class="text-editor-menu" *ngIf="showMenu"><p-menubar [model]="editorMenu"></p-menubar></div>
+  <div class="flex p-1 pb-0"[ngStyle]="{'max-height': '300px', 'overflow-y': 'auto'}" pFocusTrap (mouseleave)="hideActionsMenu($event)" (selectstart)="selectionStart($event)" (mouseup)="selectionEnd($event)" #holder>
+    <div class="text-editor-actions-container text-center" >
+      <button 
+        *ngIf="isActionMenuVisibile" 
+        pButton 
+        type="button" 
+        class="p-button-sm addBlockBtn" 
+        icon="pi pi-plus" 
+        iconPos="left" 
+        (click)="editorActions.toggle($event);"
+        [ngStyle]="{'top': actionsMenuTop}"
+      ></button>
+    </div>
+    <div class="text-editor-content flex-grow-1">
+      <ng-container *ngFor="let block of blocks; let i = index">
+        <app-text-editor-paragraph
+          #p
+          *ngIf="block.type === BLOCK_TYPES.P" 
+          [block]="block"
+          [isNew]="block.new || false"
+          (createNewBlock)="onCreateNewBlock(i)"
+          (newBlockCreated)="onNewBlockCreated($event)"
+          (mouseover)="selectBlock(i, p)"
+          (initialized)="onBlockInitialized($event)"
+        ></app-text-editor-paragraph>
+        <app-text-editor-list 
+          #list
+          *ngIf="block.type === BLOCK_TYPES.OL || block.type === BLOCK_TYPES.UL"
+          [block]="block"
+          [isNew]="block.new || false"
+          (createNewBlock)="onCreateNewBlock(i)"
+          (newBlockCreated)="onNewBlockCreated($event)"
+          (mouseover)="selectBlock(i, list)"
+        ></app-text-editor-list>
+        <app-text-editor-heading 
+          #h
+          *ngIf="block.type === BLOCK_TYPES.H"
+          [block]="block"
+          [isNew]="block.new || false"
+          (createNewBlock)="onCreateNewBlock(i)"
+          (newBlockCreated)="onNewBlockCreated($event)"
+          (mouseover)="selectBlock(i, h)"
+        ></app-text-editor-heading>
+        <app-text-editor-divider 
+          #hr
+          *ngIf="block.type === BLOCK_TYPES.HR"
+          [block]="block"
+          [isNew]="block.new || false"
+          (mouseover)="selectBlock(i, hr)"
+          (createNewBlock)="onCreateNewBlock(i)"
+        ></app-text-editor-divider>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<p-overlayPanel #editorActions>
+  <ng-template pTemplate>
+    <div class="text-editor-actions">
+      <button class="mb-1" type="button" (click)="addH()">
+        Heading
+      </button>
+      <br>
+      <button class="mb-1" type="button" (click)="addP()">
+        Paragraph
+      </button>
+      <br>
+      <button class="mb-1" type="button" (click)="addUL()">
+        Unordered List
+      </button>
+      <br>
+      <button class="mb-1" type="button" (click)="addOL()">
+        Ordered List
+      </button>
+      <br>
+      <button class="mb-1" type="button" (click)="addHR()">
+        Dividier
+      </button>
+      <br>
+      <button class="mb-1" type="button" (click)="moveUp()">
+        <i class="pi pi-arrow-up"></i>
+      </button>
+      <button class="mb-1" type="button" (click)="moveDown()">
+        <i class="pi pi-arrow-down"></i>
+      </button>
+    </div>
+  </ng-template>
+</p-overlayPanel>
+
+<p-contextMenu [target]="holder" [model]="items" (onShow)="onContextMenuShow($event, menu)" #menu [appendTo]="'body'"></p-contextMenu>
