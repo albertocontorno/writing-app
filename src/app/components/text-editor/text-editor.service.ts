@@ -6,9 +6,21 @@ import { ProjectService } from 'src/app/services/project.service';
   providedIn: 'root',
 })
 export class TextEditorService {
+  editorId: string = '';
   blocks: TextEditorBlock[] = [];
   sel;
-  constructor(private projectService: ProjectService) {}
+  
+  constructor(private projectService: ProjectService) {
+    
+  }
+
+  register(){
+    this.projectService.registerEditorService(this.editorId, this);
+  }
+
+  onChange(){
+    this.projectService.onChange(this.editorId);
+  }
 
   init(blocks: any[]) {
     blocks.forEach((block) => {
@@ -31,7 +43,9 @@ export class TextEditorService {
     this.projectService.setCurrentEditor(editor);
   }
 
-  
+  onEvent(target: HTMLElement){
+    this.projectService.onEvent(target);
+  }
 
   makeBold(block, selection) {
     this.styleRange(selection, 'b');
@@ -57,14 +71,11 @@ export class TextEditorService {
       selection,
       'a',
       {color: 'yellow', textDecoration: 'underline'},
-      {href: '', 'te-data': 'te-REF', 'te-data-context': JSON.stringify({pointer: reference.pointer, id: reference.id}) },
-      ['text-editor-reference'],
-      [{trigger: 'click', command: (e) => { console.log('CLICK :D', e); this.openReference(e); }}]
+      {href: '', 'te-EVENT': '', 'te-data': 'te-REF', 'te-data-context': JSON.stringify({pointer: reference.pointer, id: reference.id}) },
+      ['text-editor-reference']
     );
   }
-  openReference(e){
-    this.projectService.openReference$.next(e.target)
-  }
+
   createReference(block?, selection?){
     this.projectService.createReference();
   }
@@ -323,7 +334,9 @@ export class TextEditorService {
     return text;
   }
 
-  deleteBlock(){}
+  deleteBlock(selectedBlockIndex){
+    this.blocks.splice(selectedBlockIndex, 1);
+  }
 
   addBlock(){}
 

@@ -1,6 +1,8 @@
+import { TextEditorService } from './../text-editor.service';
 import { Component, AfterViewInit, EventEmitter, Input, Output, Renderer2, ViewContainerRef, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { debounceTime, fromEvent, Subscription } from 'rxjs';
 import { BLOCK_TYPES } from '../text-editor.contants';
+import { KEYDOWN } from 'src/app/utils/keyCodes';
 
 @Component({
   selector: 'app-text-editor-block',
@@ -10,6 +12,7 @@ import { BLOCK_TYPES } from '../text-editor.contants';
 export abstract class TextEditorBlockComponent<T extends HTMLElement> implements AfterViewInit, OnDestroy {
 
   @Input() block;
+  @Input() service: TextEditorService;
   @Input() isNew: boolean = false;
   @Output() createNewBlock: EventEmitter<void> = new EventEmitter();
   @Output() newBlockCreated: EventEmitter<this> = new EventEmitter();
@@ -32,10 +35,32 @@ export abstract class TextEditorBlockComponent<T extends HTMLElement> implements
     if(this.isNew){
       this.newBlockCreated.emit(this);
     }
+
+    this.subscriptions.push( fromEvent(this.container, 'click')
+      .pipe( debounceTime(200) )
+      .subscribe( e => {
+        if(e.target){
+          if((e.target as HTMLElement).attributes['te-event']){
+            this.service.onEvent(e.target as HTMLElement);
+          }
+        }
+      })
+    );
+
+    this.subscriptions.push( fromEvent(this.container, KEYDOWN)
+      .pipe( debounceTime(300) )
+      .subscribe( (e: any) => {
+        this.upadteModel();
+        this.service.onChange();
+      } ));
+
+
     this.initialized.emit(this);
   }
 
   abstract createBlockElement(): HTMLElement;
+
+  abstract upadteModel();
 
   ngOnDestroy(): void {
     this.subscriptions.forEach( sub => sub.unsubscribe() );

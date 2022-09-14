@@ -12,5 +12,5 @@ export interface TextEditorBlock {
   new?: boolean; //internal
   isNew?: boolean; //internal
   component?: boolean; //internal
-  element?: boolean; //internal
+  element?: HTMLElement; //internal
 }

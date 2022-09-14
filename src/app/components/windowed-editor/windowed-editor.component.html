@@ -13,10 +13,6 @@
   </div>
 
   <div *ngIf="contentVisible" class="content" [ngStyle]="{'min-width': dimension.tw + 'px'}" #content (click)="onFocus(windowEditor)">
-    <!-- <textarea 
-      (focus)="onFocus(windowEditor)"
-      [(ngModel)]="data.text"
-    ></textarea> -->
     <ng-content></ng-content>
   </div>
 

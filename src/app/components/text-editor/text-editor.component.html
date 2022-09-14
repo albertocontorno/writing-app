@@ -1,6 +1,6 @@
 <div class="text-editor-wrapper" (mouseover)="setCurrentEditor()">
   <div class="text-editor-menu" *ngIf="showMenu"><p-menubar [model]="editorMenu"></p-menubar></div>
-  <div class="flex p-1 pb-0"[ngStyle]="{'max-height': '300px', 'overflow-y': 'auto'}" pFocusTrap (mouseleave)="hideActionsMenu($event)" (selectstart)="selectionStart($event)" (mouseup)="selectionEnd($event)" #holder>
+  <div class="flex p-1 pb-0"[ngStyle]="{'max-height': 'calc(100vh - 210px)', 'overflow-y': 'auto'}" pFocusTrap (mouseleave)="hideActionsMenu($event)" (selectstart)="selectionStart($event)" (mouseup)="selectionEnd($event)" #holder>
     <div class="text-editor-actions-container text-center" >
       <button 
         *ngIf="isActionMenuVisibile" 
@@ -19,6 +19,7 @@
           #p
           *ngIf="block.type === BLOCK_TYPES.P" 
           [block]="block"
+          [service]="textEditorService"
           [isNew]="block.new || false"
           (createNewBlock)="onCreateNewBlock(i)"
           (newBlockCreated)="onNewBlockCreated($event)"
@@ -29,6 +30,7 @@
           #list
           *ngIf="block.type === BLOCK_TYPES.OL || block.type === BLOCK_TYPES.UL"
           [block]="block"
+          [service]="textEditorService"
           [isNew]="block.new || false"
           (createNewBlock)="onCreateNewBlock(i)"
           (newBlockCreated)="onNewBlockCreated($event)"
@@ -38,6 +40,7 @@
           #h
           *ngIf="block.type === BLOCK_TYPES.H"
           [block]="block"
+          [service]="textEditorService"
           [isNew]="block.new || false"
           (createNewBlock)="onCreateNewBlock(i)"
           (newBlockCreated)="onNewBlockCreated($event)"
@@ -47,6 +50,7 @@
           #hr
           *ngIf="block.type === BLOCK_TYPES.HR"
           [block]="block"
+          [service]="textEditorService"
           [isNew]="block.new || false"
           (mouseover)="selectBlock(i, hr)"
           (createNewBlock)="onCreateNewBlock(i)"
@@ -79,11 +83,14 @@
         Dividier
       </button>
       <br>
-      <button class="mb-1" type="button" (click)="moveUp()">
+      <button class="mb-1 mr-1" type="button" (click)="moveUp()">
         <i class="pi pi-arrow-up"></i>
       </button>
-      <button class="mb-1" type="button" (click)="moveDown()">
+      <button class="mb-1 mr-1" type="button" (click)="moveDown()">
         <i class="pi pi-arrow-down"></i>
+      </button>
+      <button class="mb-1" type="button" (click)="deleteBlock()">
+        <i class="pi pi-times"></i>
       </button>
     </div>
   </ng-template>

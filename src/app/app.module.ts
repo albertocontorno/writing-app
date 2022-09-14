@@ -17,7 +17,10 @@ import {SplitterModule} from 'primeng/splitter';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {DialogModule} from 'primeng/dialog';
 import {InputTextModule} from 'primeng/inputtext';
-
+import {TreeModule} from 'primeng/tree';
+import {MenuModule} from 'primeng/menu';
+import {ConfirmPopupModule} from 'primeng/confirmpopup';
+import {AutoFocusModule} from 'primeng/autofocus';
 
 import { WindowedEditorComponent } from './components/windowed-editor/windowed-editor.component';
 import { TextEditorComponent } from './components/text-editor/text-editor.component';
@@ -30,6 +33,8 @@ import { WritingDesktopComponent } from './components/writing-desktop/writing-de
 
 import { WindowedEditorService } from './services/windowed-editor.service';
 import { TextEditorDividerComponent } from './components/text-editor/text-editor-divider/text-editor-divider.component';
+import { HierarchyMenuComponent } from './components/hierarchy-menu/hierarchy-menu.component';
+import { HierarchyMenuItemComponent } from './components/hierarchy-menu/hierarchy-menu-item/hierarchy-menu-item.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +48,8 @@ import { TextEditorDividerComponent } from './components/text-editor/text-editor
     TextEditorExtrasComponent,
     WritingDesktopComponent,
     TextEditorDividerComponent,
+    HierarchyMenuComponent,
+    HierarchyMenuItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,10 +66,13 @@ import { TextEditorDividerComponent } from './components/text-editor/text-editor
     SplitterModule,
     ScrollPanelModule,
     DialogModule,
-    InputTextModule
+    InputTextModule,
+    TreeModule,
+    MenuModule,
+    ConfirmPopupModule,
+    AutoFocusModule
   ],
   providers: [
-    WindowedEditorService
   ],
   bootstrap: [AppComponent]
 })

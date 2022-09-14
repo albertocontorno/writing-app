@@ -2,7 +2,7 @@ import { TextEditorBlock } from './models/text-editor.model';
 import { generateUUID } from 'src/app/utils/utils';
 import { Component, Input, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import {MenuItem} from 'primeng/api';
-import { BLOCK_TYPES, getDefaultBlock } from './text-editor.contants';
+import { BLOCK_TYPES, getDefaultBlock, GET_HR_MENU, GET_H_MENU, GET_LIST_OL_MENU, GET_LIST_UL_MENU, GET_P_MENU } from './text-editor.contants';
 import { TextEditorService } from './text-editor.service';
 import { BLOCKS } from 'src/app/utils/mockedData';
 import { TextEditorBlockComponent } from './text-editor-block/text-editor-block.component';
@@ -17,21 +17,9 @@ export class TextEditorComponent implements OnInit {
   BLOCK_TYPES = BLOCK_TYPES;
   currentPageIndex: number = 0;
   @Input() blocks: TextEditorBlock[] = [getDefaultBlock()];
+  @Input() id: string = 'te-' + generateUUID();
   @Input() showMenu: boolean = false;
-  editorMenu: MenuItem[] = [
-    {
-      label: 'Save',
-      command: () => {
-        this.textEditorService.save()
-      }
-    },
-    {
-      label: 'Add Reference',
-      command: () => {
-        this.textEditorService.createReference()
-      }
-    }
-  ]
+  @Input() editorMenu: MenuItem[] = [];
   items: MenuItem[] = [
     {
         label: 'Edit',
@@ -71,21 +59,22 @@ export class TextEditorComponent implements OnInit {
   selectedBlockIndex?: number = undefined;
   selection?: Range | null;
 
-  @ViewChild('holder') holder;
+  LIST_UL_MENU = GET_LIST_UL_MENU(this);
+  LIST_OL_MENU = GET_LIST_OL_MENU(this);
+  P_MENU = GET_P_MENU(this);
+  H_MENU = GET_H_MENU(this);
+  HR_MENU = GET_HR_MENU(this);
+
+  @ViewChild('holder') holderEl;
   @ViewChild('editorActions') editorActions;
-  constructor(private textEditorService: TextEditorService) { }
+  constructor(public textEditorService: TextEditorService) {}
 
   ngOnInit(): void {
-    console.log(this.blocks)
+    this.textEditorService.editorId = this.id;
+    this.textEditorService.register();
   }
 
-  onBlockInitialized(textEditorBlock: TextEditorBlockComponent<any>){
-    setTimeout( () => {
-      textEditorBlock.container.querySelectorAll('a[te-data="te-REF"]').forEach( el => 
-        el.addEventListener( 'click', this.textEditorService.openReference.bind(this.textEditorService) )
-      );
-    });
-  }
+  onBlockInitialized(textEditorBlock: TextEditorBlockComponent<any>){ }
 
   setCurrentEditor(){
     this.textEditorService.setCurrentEditor(this);
@@ -114,11 +103,22 @@ export class TextEditorComponent implements OnInit {
   }
 
   reference(){
-    this.textEditorService.addReference(this.blocks[this.selectedBlockIndex as number], this.selection, null);
+    this.textEditorService.useReference(null, this.selection);
+  }
+
+  replaceBlock(index, newBlock){
+    this.blocks.splice(index, 1, newBlock);
+    this.textEditorService.onChange();
+    /* this.textEditorService.replaceBlock(this.selectedBlockIndex!, newBlock); */
+  }
+
+  deleteBlock(){
+    this.blocks.splice(this.selectedBlockIndex!, 1);
+    this.textEditorService.onChange();
   }
 
   ngAfterViewInit(){
-    this.holder.nativeElement.addEventListener('keyup', (e) => {
+    this.holderEl.nativeElement.addEventListener('keyup', (e) => {
       if(e.key === 'l' && e.ctrlKey){
         this.print();
       }
@@ -138,12 +138,6 @@ export class TextEditorComponent implements OnInit {
         e.stopPropagation();
       }
       if(e.key === 'l' && e.ctrlKey && this.selection && this.selectedBlockIndex !== undefined && this.selectedBlockIndex > -1){
-        /* this.textEditorService.addReference(this.blocks[this.selectedBlockIndex], this.selection)
-        this.textEditorService.createReference(this.blocks[this.selectedBlockIndex], this.selection) */
-        /* this.textEditorService.addReference(this.blocks[this.selectedBlockIndex], this.selection) */
-        // save selection
-        // choose reference to use
-        // call this.textEditorService.addReference(this.blocks[this.selectedBlockIndex], this.selection)
         this.textEditorService.useReference(null, this.selection)
         e.preventDefault();
         e.stopPropagation();
@@ -168,6 +162,7 @@ export class TextEditorComponent implements OnInit {
       }
     );
     this.editorActions.hide();
+    this.textEditorService.onChange();
   }
 
   addP(){
@@ -224,6 +219,7 @@ export class TextEditorComponent implements OnInit {
       }
     );
     this.editorActions.hide();
+    this.textEditorService.onChange();
   }
   
   selectBlock(index: number, component: any){
@@ -237,8 +233,8 @@ export class TextEditorComponent implements OnInit {
 
   hideActionsMenu(e){
     const toElement: HTMLElement = e.toElement;
-    if(toElement.firstElementChild?.firstElementChild?.classList.contains('text-editor-actions')
-      || toElement.firstElementChild?.classList.contains('text-editor-actions')){
+    if(toElement?.firstElementChild?.firstElementChild?.classList.contains('text-editor-actions')
+      || toElement?.firstElementChild?.classList.contains('text-editor-actions')){
       return;
     }
     setTimeout( () => this.editorActions.hide(), 10 );
@@ -281,6 +277,8 @@ export class TextEditorComponent implements OnInit {
         this.items = this.P_MENU;
       } else if(this.blocks[this.selectedBlockIndex!].type === BLOCK_TYPES.H) {
         this.items = this.H_MENU;
+      } else if(this.blocks[this.selectedBlockIndex!].type === BLOCK_TYPES.HR) {
+        this.items = this.HR_MENU;
       }
     }
   }
@@ -291,6 +289,7 @@ export class TextEditorComponent implements OnInit {
       const temp = this.blocks[prevIndex];
       this.blocks[prevIndex] = this.blocks[this.selectedBlockIndex!];
       this.blocks[this.selectedBlockIndex!] = temp;
+      this.textEditorService.onChange();
     }
   }
 
@@ -300,83 +299,16 @@ export class TextEditorComponent implements OnInit {
       const temp = this.blocks[nextIndex];
       this.blocks[nextIndex] = this.blocks[this.selectedBlockIndex!];
       this.blocks[this.selectedBlockIndex!] = temp;
+      this.textEditorService.onChange();
     }
+  }
+
+  scrollTo(block: TextEditorBlock){
+    block.element!.scrollIntoView({behavior: 'smooth'});
   }
 
   print(){
     console.log(this.blocks)
   }
   
-  LIST_UL_MENU = [ 
-    {
-      label: 'To OL',
-      command: () => this.textEditorService.replaceBlock(this.selectedBlockIndex!, {type: BLOCK_TYPES.OL, items: this.blocks[this.selectedBlockIndex!].items, new: true})
-    },
-    {
-      label: 'Bold',
-      command: () => this.bold()
-    },
-    {
-      label: 'Italic',
-      command: () => this.italic()
-    }
-  ];
-  LIST_OL_MENU = [
-    {
-      label: 'To OL',
-      command: () => this.textEditorService.replaceBlock(this.selectedBlockIndex!, {type: BLOCK_TYPES.UL, items: this.blocks[this.selectedBlockIndex!].items, new: true})
-    },
-    {
-      label: 'Bold',
-      command: () => this.bold()
-    },
-    {
-      label: 'Italic',
-      command: () => this.italic()
-    }
-  ];
-  P_MENU = [
-    {
-      label: 'To H',
-      command: () => this.textEditorService.replaceBlock(this.selectedBlockIndex!, {type: BLOCK_TYPES.H, text: this.blocks[this.selectedBlockIndex!].text, new: true})
-    },
-    {
-      label: 'To OL',
-      command: () => this.textEditorService.replaceBlock(this.selectedBlockIndex!, {type: BLOCK_TYPES.OL, items: [this.blocks[this.selectedBlockIndex!].text], new: true})
-    },
-    {
-      label: 'To UL',
-      command: () => this.textEditorService.replaceBlock(this.selectedBlockIndex!, {type: BLOCK_TYPES.UL, items: [this.blocks[this.selectedBlockIndex!].text], new: true})
-    },
-    {
-      label: 'Bold',
-      command: () => this.bold()
-    },
-    {
-      label: 'Italic',
-      command: () => this.italic()
-    }
-  ];
-  H_MENU = [
-    {
-      label: 'To p',
-      command: () => this.textEditorService.replaceBlock(this.selectedBlockIndex!, {type: BLOCK_TYPES.P, text: this.blocks[this.selectedBlockIndex!].text, new: true})
-    },
-    {
-      label: 'To OL',
-      command: () => this.textEditorService.replaceBlock(this.selectedBlockIndex!, {type: BLOCK_TYPES.OL, items: [this.blocks[this.selectedBlockIndex!].text], new: true})
-    },
-    {
-      label: 'To UL',
-      command: () => this.textEditorService.replaceBlock(this.selectedBlockIndex!, {type: BLOCK_TYPES.UL, items: [this.blocks[this.selectedBlockIndex!].text], new: true})
-    },
-    {
-      label: 'Bold',
-      command: () => this.bold()
-    },
-    {
-      label: 'Italic',
-      command: () => this.italic()
-    }
-  ];
 }

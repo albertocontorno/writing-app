@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { fromEvent, debounceTime } from 'rxjs';
 import { BACKSPACE, ENTER, KEYDOWN } from 'src/app/utils/keyCodes';
 import { getCurrentItem } from 'src/app/utils/utils';
 import { TextEditorBlockComponent } from '../text-editor-block/text-editor-block.component';
@@ -43,11 +42,13 @@ export class TextEditorListComponent extends TextEditorBlockComponent<HTMLParagr
       }
     });
 
-    this.subscriptions.push( fromEvent(listElement, KEYDOWN)
-      .pipe( debounceTime(300) )
-      .subscribe( _  => /* this.block.items = */ this.container.querySelectorAll('li').forEach( (li,i) => this.block.items[i] = li.innerHTML )/* innerText.split(/\n/g) */ ) );
-
     return listElement;
+  }
+
+  upadteModel() {
+    const lis = this.container.querySelectorAll('li')
+    this.block.items.splice(lis.length-1, this.block.items.length - lis.length );
+    lis.forEach( (li,i) => this.block.items[i] = li.innerHTML );
   }
 
   trackByFn(i: number, item: {id: string, text: string}){

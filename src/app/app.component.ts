@@ -17,18 +17,21 @@ export class AppComponent {
   title = 'writing-app';
 
   items: MenuItem[];
-  project: Project = {"pages":[{"id":"4059c6fc-6058-4657-86a5-16f244c7273c","blocks":[{"id":"65424b0d-5f3f-4e4f-8ede-9d42ab70969b","type":"P","text":"as<b>dasda</b>sda<a class=\"text-editor-reference\" href=\"\" te-data=\"te-REF\" te-data-context=\"{&quot;pointer&quot;:[&quot;1351967c-4a5d-47d0-bb10-fe29c25d01ab&quot;],&quot;id&quot;:&quot;3f6d9028-04c7-4cba-bfc7-653aa723e4fc&quot;}\" style=\"color: yellow; text-decoration: underline;\">sdasd</a>asds","position":0}],"position":0,"title":""}],"references":[{"id":"3f6d9028-04c7-4cba-bfc7-653aa723e4fc","type":"PROJECT","pointer":["1351967c-4a5d-47d0-bb10-fe29c25d01ab"],"blocks":[{"id":"1c6e9433-a52b-4c59-beba-04e9dec59efa","type":"P","text":"test","position":0}],"title":"tests"}],"notes":[],"id":"1351967c-4a5d-47d0-bb10-fe29c25d01ab"}
-  /* {
-    pages: [{
+  // {"name": "Dev project","files":[{"id":"4059c6fc-6058-4657-86a5-16f244c7273c","blocks":[{"id":"65424b0d-5f3f-4e4f-8ede-9d42ab70969b","type":"P","text":"as<b>dasda</b>sda<a class=\"text-editor-reference\" href=\"\" te-data=\"te-REF\" te-data-context=\"{&quot;pointer&quot;:[&quot;1351967c-4a5d-47d0-bb10-fe29c25d01ab&quot;],&quot;id&quot;:&quot;3f6d9028-04c7-4cba-bfc7-653aa723e4fc&quot;}\" style=\"color: yellow; text-decoration: underline;\">sdasd</a>asds","position":0}],"position":0,"title":""}],"references":[{"id":"3f6d9028-04c7-4cba-bfc7-653aa723e4fc","type":"PROJECT","pointer":["1351967c-4a5d-47d0-bb10-fe29c25d01ab"],"blocks":[{"id":"1c6e9433-a52b-4c59-beba-04e9dec59efa","type":"P","text":"test","position":0}],"title":"tests"}],"notes":[],"id":"1351967c-4a5d-47d0-bb10-fe29c25d01ab"}
+  project: Project =
+  {
+    name: 'Initial project',
+    files: [{
+      name: 'Page 1',
+      type: 'FILE', 
+      path: '/page_1',
       id: generateUUID(),
       blocks: [getDefaultBlock()],
-      position: 0,
-      title: ''
     }],
     references: [],
     notes: [],
     id: generateUUID(),
-  };; */
+  };
 
   windows: WindowedEditor[] = [{
     title: 'Initial Window',
@@ -65,12 +68,15 @@ export class AppComponent {
   }
 
   createNewProject(){
-    const project: Project = {
-      pages: [{
+    const project: Project = 
+    {
+      name: 'New Project',
+      files: [{
+        name: 'Page 1',
+        type: 'FILE', 
+        path: '/page_1',
         id: generateUUID(),
         blocks: [getDefaultBlock()],
-        position: 0,
-        title: ''
       }],
       references: [],
       notes: [],
@@ -81,7 +87,6 @@ export class AppComponent {
   }
 
   onDeleteWindow(index: number){
-    console.log('????', index)
     this.windows.splice(index, 1);
   }
 }

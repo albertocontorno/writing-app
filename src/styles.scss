@@ -10,6 +10,13 @@ html, body{
   color: green;
 }
 
+.title-bar{
+  background-color: #091a32;
+  color: white;
+  font-weight: bold;
+  padding: 0px 10px;
+}
+
 /* ol, ul {
   color: black !important;
 } */
@@ -23,9 +30,14 @@ html, body{
 
 .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link{
   padding: 0.25rem 0.3rem !important;
-  background-color: whitesmoke !important;
-  color: black !important;
+  background-color: #091a32 !important;
+  color: white !important;
   border-radius: 0px !important;
+  border-color: transparent transparent #0b213f transparent !important;
+}
+
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link{
+  background-color: #0b213f !important;
   border-color: transparent transparent #bdbdbd transparent !important;
 }
 
@@ -51,12 +63,23 @@ html, body{
 }
 .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link{
   padding: 0.25rem !important;
-  padding: 0.25rem 0.75rem;
 }
 
 .p-menubar .p-menuitem{
-  margin-right: 10px;
+  margin-right: 10px !important;
 }
+
+.p-tree{
+  border-radius: 3px!important;
+  padding: 0.25rem!important;
+}
+
+.p-tree .p-tree-container .p-treenode .p-treenode-content {
+  padding: 0.1rem!important;
+  border-radius: 3px!important;
+}
+
+
 
 /* .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-icon {
   margin-right: 0rem !important;

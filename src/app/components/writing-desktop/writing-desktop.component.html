@@ -1,34 +1,61 @@
-<p-splitter [style]="{'height': '400px'}" [panelSizes]="[15,85]" [minSizes]="[10,80]">
+<p-splitter [style]="{'height': 'calc(100vh - 50px)'}" [panelSizes]="[20,80]" [minSizes]="[10,80]">
   <ng-template pTemplate>
-      Index
-      <a href="https://www.w3schools.com">asd</a>
-      <ul contenteditable="true">
-        <li>as <span contenteditable="false"><a href="https://www.w3schools.com">asd</a></span>  asdas</li>
-      </ul>
-  </ng-template>
-  <ng-template pTemplate>
+    <p-splitter [style]="{'height': '800px'}" [panelSizes]="[50,50]" [minSizes]="[20,20]">
 
-    <p-splitter [style]="{'height': '400px'}" [panelSizes]="[70,30]" [minSizes]="[60,20]">
+      <ng-template pTemplate>
+        <app-hierarchy-menu 
+          style="width: 100%;"
+          [items]="project.files"
+          (init)="onHierarchyMenuInit($event)"
+          (createFile)="onCreateFile($event)"
+          (createFolder)="onCreateFolder($event)"
+          (deleteItem)="onDeleteItem($event)"
+          (openItem)="openItem($event)"
+        ></app-hierarchy-menu>
+      </ng-template>
+
+      <ng-template pTemplate>
+        <app-text-editor-index
+          style="width: 100%;"
+          [blocks]="project.files[currentPageIndex].blocks!"
+          [references]="project.references"
+          (nodeSelected)="onNodeSelected($event)"
+      ></app-text-editor-index>
+      </ng-template>
+    </p-splitter>
+
+  </ng-template>
+
+  <ng-template pTemplate>
+    <p-splitter [style]="{'height': '800px'}" [panelSizes]="[80,20]" [minSizes]="[60,20]">
       <ng-template pTemplate>
         <div class="main-text-editor-wrapper flex flex-column">
-          <app-text-editor class="flex-grow-1" [blocks]="project.pages[currentPageIndex].blocks" [showMenu]="true"></app-text-editor>
+          <app-text-editor 
+            class="flex-grow-1" 
+            [blocks]="project.files[currentPageIndex].blocks!"
+            [showMenu]="true"
+            [editorMenu]="editorMenu"
+            [id]="'main'"
+          ></app-text-editor>
           <div class="flex pl-5 pr-7"> 
-            <div style="width: 100%;">
-              <p-tabMenu [model]="tabmenu" [scrollable]="true" #tabs ></p-tabMenu>
+            <!-- <div style="width: 100%;">
+              <p-tabMenu *ngIf="tabmenu" [model]="tabmenu" [scrollable]="true" #tabs [activeItem]="tabmenu[0]"></p-tabMenu>
             </div>
-            <button class="ml-1" style="border-style: solid;" type="button" (click)="addPage()"> <i class="pi pi-plus"></i></button>
+            <button class="ml-1" style="border-style: solid;" type="button" (click)="addPage()"> <i class="pi pi-plus"></i></button> -->
           </div>
         </div>
       </ng-template>
       <ng-template pTemplate>
         <div style="width: 100%">
-          <app-text-editor-extras></app-text-editor-extras>
+          <app-text-editor-extras [notes]="project.notes"></app-text-editor-extras>
         </div>
       </ng-template>
     </p-splitter>
-
   </ng-template>
+
 </p-splitter>
+
+<!-- REFERENCE -->
 
 <p-dialog header="Create Reference" [(visible)]="isReferenceCreationVisible" [style]="{width: '60vw'}" [modal]="true">
   <ng-container *ngIf="newReference">
@@ -49,7 +76,25 @@
 
 <p-overlayPanel #referenceOP>
   <ng-template pTemplate>
-    <app-text-editor class="flex-grow-1" [blocks]="currentReference.blocks"></app-text-editor>
+    <ng-container *ngIf="currentReference">
+      <h3 contenteditable="true" (keydown)="updateReferenceTitle($event, currentReference)">{{currentReference.title}}</h3>
+      <app-text-editor class="flex-grow-1" [blocks]="currentReference.blocks"></app-text-editor>
+    </ng-container>
+    <div *ngIf="!currentReference">The reference doesn't exist!</div>
   </ng-template>
 </p-overlayPanel>
 
+<!-- NOTES -->
+
+<p-dialog header="Create Note" [(visible)]="isNoteCreationVisible" [style]="{width: '60vw'}" [modal]="true">
+  <ng-container *ngIf="newNote">
+    <label for="refTitle" class="mr-2">Note Title</label>
+    <input type="text" pInputText [(ngModel)]="newNote.title" id="refTitle"/>
+    <br><br>
+    <app-text-editor class="flex-grow-1" [blocks]="newNote.blocks ||  []"></app-text-editor>
+  </ng-container>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Create" class="p-button-success" [disabled]="!newNote?.title" (click)="createNote()"></button>
+    <button pButton type="button" label="Cancel" class="p-button-danger" (click)="closeCreateNote()"></button>
+  </ng-template>
+</p-dialog>

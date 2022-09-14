@@ -1,0 +1,21 @@
+.arrow{
+  font-size: 0.7rem;
+  padding-top: 3px;
+  margin-left: 5px;
+}
+
+.item{
+  padding-left: 5px;
+}
+.item:hover{
+  background-color: rgba(255, 255, 255, 0.123);
+}
+.item.selected{
+  background-color: rgba(80, 110, 141, 0.507);
+}
+.item.selected:hover{
+  background-color: rgba(80, 110, 141, 0.707);
+}
+/* .item.with-parent{
+  border-left: 1px solid rgba(255, 255, 255, 0.596);
+} */

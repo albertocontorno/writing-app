@@ -24,12 +24,12 @@ export class TextEditorParagraphComponent extends TextEditorBlockComponent<HTMLP
         e.stopPropagation();
       }
     });
-
-    this.subscriptions.push( fromEvent(paragraphElement, KEYDOWN)
-      .pipe( debounceTime(300) )
-      .subscribe( _ => this.block.text = this.container.innerHTML ) );
-
+          
     return paragraphElement;
+  }
+
+  upadteModel() {
+    this.block.text = this.container.innerHTML
   }
 
   

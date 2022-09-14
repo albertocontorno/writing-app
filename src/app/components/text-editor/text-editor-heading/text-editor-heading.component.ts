@@ -12,7 +12,7 @@ export class TextEditorHeadingComponent extends TextEditorBlockComponent<HTMLHea
 
   createBlockElement(): HTMLHeadingElement {
     const headingElement = this.render.createElement('h1');
-    this.render.appendChild(headingElement,  this.render.createText(this.block.text));
+    this.render.setProperty(headingElement, 'innerHTML', this.block.text);
     headingElement.addEventListener(KEYDOWN, (e) => {
       if(e.key === ENTER && !e.shiftKey){
         this.createNewBlock.emit();
@@ -24,11 +24,11 @@ export class TextEditorHeadingComponent extends TextEditorBlockComponent<HTMLHea
       }
     });
 
-    this.subscriptions.push( fromEvent(headingElement, KEYDOWN)
-      .pipe( debounceTime(300) )
-      .subscribe( _ => this.block.text = this.container.innerHTML ) );
-
     return headingElement;
+  }
+
+  upadteModel() {
+    this.block.text = this.container.innerHTML
   }
 
 }
